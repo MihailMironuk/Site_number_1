@@ -6,7 +6,7 @@ import random
 
 def info_view(request):
     if request.method == "GET":
-        return HttpResponse('Привет, меня зовут Селедцов Михаил, мне 23')
+        return HttpResponse('Привет, меня зовут Селедцов Михаил, мне 230')
 
 
 def hobbies_view(request):
