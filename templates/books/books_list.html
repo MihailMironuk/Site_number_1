@@ -1,0 +1,11 @@
+<h1>Список книг</h1>
+<hr>
+    {% for i in books %}
+    <br>
+    <img src="{{ i.image.url }}" width="280" height="350">
+    <h2>Название книги - {{ i.name }}</h2>
+    <p>Описание - {{ i.about_emp }}</p>
+    <a href="/books/{{ i.id }}/">Подробнее</a>
+    <br>
+    {% endfor %}
+<br>
