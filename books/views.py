@@ -2,17 +2,25 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from datetime import datetime
 import random
-from books.models import Books
+from books.models import Books, Poster
+
+
+def all_books(request):
+    if request.method == 'GET':
+        books = Books.objects.filter().order_by('-id')
+        return render(request, 'all_my_books/all_books.html', {'books': books})
 
 
 def books_list_view(request):
     if request.method == 'GET':
         query = Books.objects.filter().order_by('-id')
+        posters = Poster.objects.filter().order_by('-id')
         return render(
             request,
             'books/books_list.html',
             context={
-                'books': query
+                'books': query,
+                'posters': posters,
             }
 
         )
