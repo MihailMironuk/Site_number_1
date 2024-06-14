@@ -3,12 +3,57 @@ from django.http import HttpResponse
 from datetime import datetime
 import random
 from books.models import Books, Poster
+from . import forms
+
+
+# CRUD CREATE READ UPDATE DELETE
+
+# Редактирование
+def edit_book_view(request, id):
+    book_id = get_object_or_404(Books, id=id)
+    if request.method == 'POST':
+        form = forms.BookForm(request.POST, instance=book_id)
+        if form.is_valid():
+            form.save()
+            return HttpResponse('<h3> Book updated!</h3>'
+                                '<a href="/books/">На список книг</a>')
+    else:
+        form = forms.BookForm(instance=book_id)
+    return render(request,
+                  'books/edit_book.html',
+                  {'form': form,
+                   'book_id': book_id
+                   })
+
+
+# Удаление
+def delete_book_view(request, id):
+    book_id = get_object_or_404(Books, id=id)
+    book_id.delete()
+    return HttpResponse('<h3> Book deleted</h3>'
+                        '<a href="/books/">На список книг</a>')
+
+
+# Создание
+def create_book_view(request):
+    if request.method == 'POST':
+        form = forms.BookForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return HttpResponse('<h3> Book Created!</h3>'
+                                '<a href="/books/">На список книг</a>')
+    else:
+        form = forms.BookForm()
+
+        return render(request,
+                      'books/create_book.html',
+                      {'form': form})
 
 
 def all_books(request):
     if request.method == 'GET':
         books = Books.objects.filter().order_by('-id')
-        return render(request, 'all_my_books/all_books.html', {'books': books})
+        return render(request, 'all_books/all_books.html', {'books': books})
 
 
 def books_list_view(request):

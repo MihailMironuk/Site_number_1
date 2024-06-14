@@ -1,0 +1,13 @@
+{% load static %}
+{% include "../header.html" %}
+<link rel="stylesheet" href="{% static 'css/crud_book.css' %} ">
+<form class="transparent" method="POST" enctype="multipart/form-data">
+    <div class="form-inner">
+        <h3>Редактировать книгу</h3>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Изменить">
+        <input type="reset" value="Очистить">
+    </div>
+</form>
+{% include "../footer.html" %}

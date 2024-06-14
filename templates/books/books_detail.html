@@ -1,22 +1,24 @@
+{% load static %}
 {% include "../header.html" %}
+<br>
 <center>
-<div class="card" style="width: 18rem;">
-  <img src="{{ emp_id.image.url }}" class="card-img-top" alt="...">
-  <div class="card-body">
-    <p class="card-text"><h1> Название - {{ emp_id.name }}</h1></p>
-    <p class="card-text"> Автор - {{ emp_id.author}}</p>
-    <p class="card-text"> Описание -{{ emp_id.about_emp }}</p>
-  </div>
-</div>
-  <ul>
-    {% for i in emp_id.review_books.all %}
-    <li>
-      <h1>{{ i.text }}</h1>
-      <p>{{ i.mark }}</p>
-    </li>
-    {% endfor %}
-  </ul>
-
-
+    <div class="card" style="width: 18rem;">
+        <img src="{{ emp_id.image.url }}" class="card-img-top" alt="...">
+        <div class="card-body">
+            <p class="card-text">
+            <h3> Название - {{ emp_id.name }}</h3>
+            <p class="card-text"> Автор - {{ emp_id.author }}</p>
+            <p class="card-text"> Описание - {{ emp_id.about_emp }}</p>
+        </div>
+    </div>
+    <ul>
+        {% for i in emp_id.review_books.all %}
+        <li>
+            <br>
+            <h2>Комментарий от пользователя : {{ i.text }}📖</h2>
+            <h3>Оценка: {{ i.mark }}⭐</h3>
+        </li>
+        {% endfor %}
+    </ul>
 </center>
 {% include "../footer.html" %}
