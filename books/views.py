@@ -3,12 +3,45 @@ from django.http import HttpResponse
 from datetime import datetime
 import random
 from books.models import Books, Poster
+from django.views import generic
 from . import forms
+
+
+class SearchView(generic.ListView):
+    template_name = "books/books_list.html"
+    context_object_name = "books"
+    paginate_by = 5
+
+    def get_queryset(self):
+        return Books.objects.filter(name__icontains=self.request.GET.get('q')).order_by('-id')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['query'] = self.request.GET.get('q')
+        return context
+
+
 
 
 # CRUD CREATE READ UPDATE DELETE
 
+
 # Редактирование
+
+class EditBookView(generic.UpdateView):
+    template_name = 'books/edit_book.html'
+    form_class = forms.BookForm
+    success_url = '/books/'
+
+    def get_object(self, **kwargs):
+        book_id = self.kwargs.get('id')
+        return get_object_or_404(Books, id=book_id)
+
+    def form_valid(self, form):
+        print(form.cleaned_data)
+        return super(EditBookView, self).form_valid(form=form)
+
+
 def edit_book_view(request, id):
     book_id = get_object_or_404(Books, id=id)
     if request.method == 'POST':
@@ -27,6 +60,14 @@ def edit_book_view(request, id):
 
 
 # Удаление
+class BooksDeleteView(generic.DeleteView):
+    template_name = 'books/confirm_book_delete.html'
+
+    def get_object(self, **kwargs):
+        book_id = self.kwargs.get('id')
+        return get_object_or_404(Books, id=book_id)
+
+
 def delete_book_view(request, id):
     book_id = get_object_or_404(Books, id=id)
     book_id.delete()
@@ -35,6 +76,16 @@ def delete_book_view(request, id):
 
 
 # Создание
+class CreateBookView(generic.CreateView):
+    template_name = 'books/create_book.html'
+    form_class = forms.BookForm
+    success_url = '/create_book/'
+
+    def form_valid(self, form):
+        print(form.cleaned_data)
+        return super(CreateBookView, self).form_valid(form=form)
+
+
 def create_book_view(request):
     if request.method == 'POST':
         form = forms.BookForm(request.POST, request.FILES)
@@ -56,6 +107,18 @@ def all_books(request):
         return render(request, 'all_books/all_books.html', {'books': books})
 
 
+class BooksListView(generic.ListView):
+    template_name = "books/books_list.html"
+    context_object_name = 'books'
+    model = Books
+    ordering = ['-id']
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['posters'] = Poster.objects.order_by('-id')
+        return context
+
+
 def books_list_view(request):
     if request.method == 'GET':
         query = Books.objects.filter().order_by('-id')
@@ -69,6 +132,15 @@ def books_list_view(request):
             }
 
         )
+
+
+class BooksDetailView(generic.DetailView):
+    template_name = 'books/books_detail.html'
+    context_object_name = 'book_id'
+
+    def get_object(self, **kwargs):
+        book_id = get_object_or_404('id')
+        return get_object_or_404(Books, id=book_id)
 
 
 def books_detail_view(request, id):

@@ -1,11 +1,16 @@
 {% load static %}
 {% include "../header.html" %}
-<link rel="stylesheet" href="{% static 'css/emp_list.css' %} ">
-{% for i in posters %}
-<h1>{{ i.name }}</h1>
-<img src="{{ i.image.url }}" alt="">
-{% endfor %}
 <center>
+    <br>
+    <form action="{% url 'search'  %}" method="GET">
+        <input type="search" type="text" name="q" placeholder="Найти книгу">
+        <button type="submit">Поиск</button>
+    </form>
+    <link rel="stylesheet" href="{% static 'css/emp_list.css' %} ">
+    {% for i in posters %}
+    <h1>{{ i.name }}</h1>
+    <img src="{{ i.image.url }}" alt="">
+    {% endfor %}
     <h1 class="h1_class">Книги по разным жанрам</h1>
     <button type="button" class="btn btn-primary">
         <a href="/create_book/" class="book_url">Добавить книгу</a>
