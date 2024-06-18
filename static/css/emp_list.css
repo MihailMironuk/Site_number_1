@@ -1,12 +1,14 @@
-body{
+body {
     background-color: floralwhite;
 }
-.h1_class{
+
+.h1_class {
     color: black;
     font-weight: bold;
     font-family: "Times New Roman";
 }
-.book_url{
+
+.book_url {
     color: white;
     text-decoration: none;
 }

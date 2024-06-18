@@ -1,11 +1,42 @@
-{% include "../header.html" %}
+{% include '../header.html' %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Удалить книгу?</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .container {
+            margin-top: 50px;
+            text-align: center;
+        }
+        .btn-group {
+            margin-top: 20px;
+        }
+        .quotes {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+        }
+        .quote {
+            width: 45%;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+<center>
+    <h3>Удалить книгу?</h3>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger" >Да</button>
+        <a href="/books/" class="btn btn-success">Нет</a>
 
-<h1>Вы уверены что хотите удалить эту книгу?</h1>
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <button type="submit">Да</button>
-    <button><a href="/books/">Нет</a></button>
-</form>
+    </form>
+</center>
 
-
-{% include "../footer.html" %}
+<br>
+{% include '../footer.html' %}

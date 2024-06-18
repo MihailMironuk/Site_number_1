@@ -1,10 +1,19 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
-from datetime import datetime
-import random
 from books.models import Books, Poster
 from django.views import generic
-from . import forms
+from . import forms, models
+
+
+class AllBooksView(generic.ListView):
+    template_name = 'all_books/all_books.html'
+    context_object_name = 'books'
+
+    def get_queryset(self):
+        return models.AllBooks.objects.filter().order_by('-id')
+
+
+# Кнопка поиска
 
 
 class SearchView(generic.ListView):
@@ -21,13 +30,6 @@ class SearchView(generic.ListView):
         return context
 
 
-
-
-# CRUD CREATE READ UPDATE DELETE
-
-
-# Редактирование
-
 class EditBookView(generic.UpdateView):
     template_name = 'books/edit_book.html'
     form_class = forms.BookForm
@@ -42,69 +44,23 @@ class EditBookView(generic.UpdateView):
         return super(EditBookView, self).form_valid(form=form)
 
 
-def edit_book_view(request, id):
-    book_id = get_object_or_404(Books, id=id)
-    if request.method == 'POST':
-        form = forms.BookForm(request.POST, instance=book_id)
-        if form.is_valid():
-            form.save()
-            return HttpResponse('<h3> Book updated!</h3>'
-                                '<a href="/books/">На список книг</a>')
-    else:
-        form = forms.BookForm(instance=book_id)
-    return render(request,
-                  'books/edit_book.html',
-                  {'form': form,
-                   'book_id': book_id
-                   })
-
-
-# Удаление
 class BooksDeleteView(generic.DeleteView):
     template_name = 'books/confirm_book_delete.html'
+    success_url = '/books/'
 
     def get_object(self, **kwargs):
         book_id = self.kwargs.get('id')
         return get_object_or_404(Books, id=book_id)
 
 
-def delete_book_view(request, id):
-    book_id = get_object_or_404(Books, id=id)
-    book_id.delete()
-    return HttpResponse('<h3> Book deleted</h3>'
-                        '<a href="/books/">На список книг</a>')
-
-
-# Создание
 class CreateBookView(generic.CreateView):
     template_name = 'books/create_book.html'
     form_class = forms.BookForm
-    success_url = '/create_book/'
+    success_url = '/books/'
 
     def form_valid(self, form):
         print(form.cleaned_data)
         return super(CreateBookView, self).form_valid(form=form)
-
-
-def create_book_view(request):
-    if request.method == 'POST':
-        form = forms.BookForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return HttpResponse('<h3> Book Created!</h3>'
-                                '<a href="/books/">На список книг</a>')
-    else:
-        form = forms.BookForm()
-
-        return render(request,
-                      'books/create_book.html',
-                      {'form': form})
-
-
-def all_books(request):
-    if request.method == 'GET':
-        books = Books.objects.filter().order_by('-id')
-        return render(request, 'all_books/all_books.html', {'books': books})
 
 
 class BooksListView(generic.ListView):
@@ -119,60 +75,80 @@ class BooksListView(generic.ListView):
         return context
 
 
-def books_list_view(request):
-    if request.method == 'GET':
-        query = Books.objects.filter().order_by('-id')
-        posters = Poster.objects.filter().order_by('-id')
-        return render(
-            request,
-            'books/books_list.html',
-            context={
-                'books': query,
-                'posters': posters,
-            }
-
-        )
-
-
 class BooksDetailView(generic.DetailView):
     template_name = 'books/books_detail.html'
-    context_object_name = 'book_id'
+    context_object_name = 'book'
 
     def get_object(self, **kwargs):
-        book_id = get_object_or_404('id')
+        book_id = self.kwargs.get('id')
         return get_object_or_404(Books, id=book_id)
 
+# CRUD CREATE READ UPDATE DELETE
 
-def books_detail_view(request, id):
-    if request.method == 'GET':
-        book_id = get_object_or_404(Books, id=id)
-        return render(
-            request,
-            'books/books_detail.html',
-            context={
-                'emp_id': book_id
-            }
+# def all_books(request):
+#     if request.method == 'GET':
+#         books = Books.objects.filter().order_by('-id')
+#         return render(request, 'all_books/all_books.html', {'books': books})
 
-        )
+# def edit_book_view(request, id):
+#     book_id = get_object_or_404(Books, id=id)
+#     if request.method == 'POST':
+#         form = forms.BookForm(request.POST, instance=book_id)
+#         if form.is_valid():
+#             form.save()
+#             return HttpResponse('<h3> Book updated!</h3>'
+#                                 '<a href="/books/">На список книг</a>')
+#     else:
+#         form = forms.BookForm(instance=book_id)
+#     return render(request,
+#                   'books/edit_book.html',
+#                   {'form': form,
+#                    'book_id': book_id
+#                    })
+
+# def delete_book_view(request, id):
+#     book_id = get_object_or_404(Books, id=id)
+#     book_id.delete()
+#     return HttpResponse('<h3> Book deleted</h3>'
+#                         '<a href="/books/">На список книг</a>')
+
+# def create_book_view(request):
+#     if request.method == 'POST':
+#         form = forms.BookForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             return HttpResponse('<h3> Book Created!</h3>'
+#                                 '<a href="/books/">На список книг</a>')
+#     else:
+#         form = forms.BookForm()
+#
+#         return render(request,
+#                       'books/create_book.html',
+#                       {'form': form})
+
+# def books_list_view(request):
+#     if request.method == 'GET':
+#         query = Books.objects.filter().order_by('-id')
+#         posters = Poster.objects.filter().order_by('-id')
+#         return render(
+#             request,
+#             'books/books_list.html',
+#             context={
+#                 'books': query,
+#                 'posters': posters,
+#             }
+#
+#         )
 
 
-def info_view(request):
-    if request.method == "GET":
-        return HttpResponse('Привет, меня зовут Селедцов Михаил, мне 23 года')
-
-
-def hobbies_view(request):
-    if request.method == "GET":
-        return HttpResponse('Я играю в компик')
-
-
-def current_time_view(request):
-    if request.method == "GET":
-        now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        return HttpResponse(f"Текущее время: {now}")
-
-
-def random_numbers_view(request):
-    if request.method == "GET":
-        random_number = random.randint(1, 150)
-        return HttpResponse(f"Случайные числа: {random_number}")
+# def books_detail_view(request, id):
+#     if request.method == 'GET':
+#         book_id = get_object_or_404(Books, id=id)
+#         return render(
+#             request,
+#             'books/books_detail.html',
+#             context={
+#                 'emp_id': book_id
+#             }
+#
+#         )
