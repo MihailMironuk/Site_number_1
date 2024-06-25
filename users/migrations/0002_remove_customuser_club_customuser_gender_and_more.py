@@ -7,32 +7,45 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0001_initial'),
+        ("users", "0001_initial"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='customuser',
-            name='club',
+            model_name="customuser",
+            name="club",
         ),
         migrations.AddField(
-            model_name='customuser',
-            name='gender',
-            field=models.CharField(choices=[('Male', 'Male'), ('Female', 'Female')], max_length=100, null=True),
+            model_name="customuser",
+            name="gender",
+            field=models.CharField(
+                choices=[("Male", "Male"), ("Female", "Female")],
+                max_length=100,
+                null=True,
+            ),
         ),
         migrations.AddField(
-            model_name='customuser',
-            name='squad',
-            field=models.CharField(default='Возрастная группа не определена', max_length=50, null=True),
+            model_name="customuser",
+            name="squad",
+            field=models.CharField(
+                default="Возрастная группа не определена", max_length=50, null=True
+            ),
         ),
         migrations.AlterField(
-            model_name='customuser',
-            name='age',
-            field=models.PositiveIntegerField(default=18, null=True, validators=[django.core.validators.MaxValueValidator(99), django.core.validators.MinValueValidator(5)]),
+            model_name="customuser",
+            name="age",
+            field=models.PositiveIntegerField(
+                default=18,
+                null=True,
+                validators=[
+                    django.core.validators.MaxValueValidator(99),
+                    django.core.validators.MinValueValidator(5),
+                ],
+            ),
         ),
         migrations.AlterField(
-            model_name='customuser',
-            name='phone_number',
-            field=models.CharField(default='+996', max_length=14, null=True),
+            model_name="customuser",
+            name="phone_number",
+            field=models.CharField(default="+996", max_length=14, null=True),
         ),
     ]
