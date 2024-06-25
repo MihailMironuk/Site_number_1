@@ -1,2 +1,4 @@
 .env
-
+.venv
+templates
+db.sqlite3
